@@ -24,7 +24,7 @@ data class Packet(private val action: Action, private val value: Int = 1)
             Action.ROTATE_LEFT, Action.ROTATE_RIGHT -> (value / 45) - 1
             Action.LED_ON, Action.LED_OFF -> value
             Action.END -> return arrayOf(true, true, true)
-            Action.SYNC -> return arrayOf(true, false, true, false, true)
+            Action.SYNC -> return arrayOf(true, false, true, false, true, false)
         }
         
         val bits = Array(6, { false })
