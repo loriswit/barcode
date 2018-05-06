@@ -8,7 +8,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 0.7
   orientation 1 0 0 4.71238898038469
-  position 0.008729152381420135 23.769184112548828 -0.022751856595277786
+  position 0.008729152381420135 26.508697509765625 -0.0227521825581789
 }
 Background {
   skyColor [
@@ -154,7 +154,7 @@ E-puck {
   ]
 }
 E-puck {
-  translation -0.0028585622158931634 0 -0.4164066083087177
+  translation -0.0028585604471066304 0 -0.4364066083087176
   rotation 0 1 0 3.1415925651504666
   controller "barcode_sync"
   name "e-puck0"

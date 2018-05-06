@@ -7,7 +7,7 @@
 #include "../util/ground_sensors.h"
 #include "../util/consts.h"
 
-#define MOTOR_SPEED     1
+#define MOTOR_SPEED     2.0
 #define COLOR_THRESHOLD 500
 
 #define color_t bool
@@ -15,6 +15,12 @@
 #define white   false
 
 #define SYNC_STEPS  5
+
+// rotate 135° left, turn LED 4 on, wait for 3 seconds
+#define TEST_STEPS 20
+const color_t test_values[TEST_STEPS] =
+        {black, white, white, black, white, white, white, black, white, white,
+         black, white, black, black, white, black, white, black, black, black};
 
 clock_t sync(color_t input)
 {
@@ -59,6 +65,11 @@ color_t get_input()
     return ground_value < COLOR_THRESHOLD;
 }
 
+char * col2str(color_t color)
+{
+    return color == black ? "black" : "white";
+}
+
 int main()
 {
     wb_robot_init();
@@ -68,8 +79,11 @@ int main()
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     
     bool synced = false;
+    unsigned step = 0;
     clock_t step_start = 0;
     clock_t ticks_per_step = 0;
+    
+    unsigned test_count = 0;
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
@@ -91,13 +105,28 @@ int main()
             if(step_time >= ticks_per_step)
             {
                 step_start = clock();
-                printf("%s\n", input == black ? "black" : "white");
+                
+                bool ok = input == test_values[step];
+                printf("%s = %s", col2str(input), col2str(test_values[step]));
+                printf(" -> %s\n", ok ? "ok" : "failed");
+                
+                ++step;
+                if(ok)
+                    ++test_count;
             }
         }
+        
+        if(step == TEST_STEPS)
+            break;
     }
     
     motors_stop();
     wb_robot_cleanup();
+    
+    printf("%s ", test_count == TEST_STEPS ? "Test passed!" : "Test failed!");
+    printf("(%d/%d)\n", test_count, TEST_STEPS);
+    printf("motor speed: %.1f rad/s\n", MOTOR_SPEED);
+    printf("ticks/step: %ld\n", ticks_per_step);
     
     return EXIT_SUCCESS;
 }
