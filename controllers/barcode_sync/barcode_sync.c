@@ -11,13 +11,14 @@
 #include "../common/barcode.h"
 
 #define MOTOR_SPEED     2.0
-#define COLOR_THRESHOLD 500
 
 // rotate 135° left, turn LED 4 on, wait for 3 seconds
-#define TEST_STEPS 20
+// 2, 2, 4, 4, 6, 2
+#define TEST_STEPS 21
 const color_t test_values[TEST_STEPS] =
-        {black, white, white, black, white, white, white, black, white, white,
-         black, white, black, black, white, black, white, black, black, black};
+        {white, black, white, white, black, white, white,
+         white, black, white, white, black, white, black,
+         black, white, black, white, black, black, black};
 
 int main()
 {

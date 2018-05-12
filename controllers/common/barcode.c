@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 #include <webots/robot.h>
@@ -9,7 +8,7 @@
 
 #include "barcode.h"
 
-#define COLOR_THRESHOLD 500
+#define COLOR_THRESHOLD 700
 #define SYNC_STEPS  5
 
 color_t get_color()
@@ -44,18 +43,18 @@ clock_t sync()
                 printf("Synchronising...\n");
             else
                 ticks[step - 1] = clock() - start;
-        
+            
             ++step;
             start = clock();
             last_input = input;
         }
-    
+        
         if(step > SYNC_STEPS)
         {
             clock_t average = 0;
             for(size_t i = 0; i < SYNC_STEPS; ++i)
                 average += ticks[i];
-    
+            
             clock_t ticks_per_step = average / SYNC_STEPS;
             printf("Done! (ticks/step: %ld)\n", ticks_per_step);
             return ticks_per_step;
