@@ -13,7 +13,7 @@
 #define MOTOR_SPEED     2.0
 
 // rotate 135° left, turn LED 4 on, wait for 3 seconds
-// 2, 2, 4, 4, 6, 2
+// 2, 2, 4, 4, 6, 2 (18, 36, 22)
 #define TEST_STEPS 21
 const color_t test_values[TEST_STEPS] =
         {white, black, white, white, black, white, white,

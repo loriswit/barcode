@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <stdint.h>
 
@@ -6,6 +7,7 @@
 
 #include "../util/motors.h"
 #include "../util/ground_sensors.h"
+#include "../util/com.h"
 #include "../util/consts.h"
 
 #include "../common/barcode.h"
@@ -13,12 +15,14 @@
 #define MOTOR_SPEED     2.0
 #define DATA_MAX_SIZE   100
 #define SYNC_STOP_VALUE 0b111
+#define BARS_PER_VALUE  6
 
 int main()
 {
     wb_robot_init();
     motors_init();
     ground_init();
+    com_init();
     
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     
@@ -37,23 +41,31 @@ int main()
             step_start = clock();
             color_t input = get_color();
             
-            size_t index = step / 3;
-            data[index] |= input << (step % 3);
+            size_t index = step / BARS_PER_VALUE;
+            data[index] |= input << (step % BARS_PER_VALUE);
             
-            if(index % 2 == 0 && data[index] == SYNC_STOP_VALUE)
+            if(data[index] == SYNC_STOP_VALUE)
                 break;
             
             ++step;
         }
     }
     
-    const size_t data_size = step / 3;
-    
-    printf("Done! (");
-    for(size_t i = 0; i < data_size; ++i)
-        printf("%d%s", data[i], i == data_size - 1 ? ")\n" : "-");
-    
     motors_stop();
+    
+    const size_t data_size = step / BARS_PER_VALUE;
+    
+    printf("Done! (data: ");
+    for(size_t i = 0; i < data_size; ++i)
+        printf("%d%s", data[i], i == data_size - 1 ? ")\n" : ", ");
+    
+    printf("Sending packet...\n");
+    packet_t packet = {data, data_size};
+    if(com_send(packet))
+        printf("Done!\n");
+    else
+        printf("Failed!\n");
+    
     wb_robot_cleanup();
     
     return EXIT_SUCCESS;
