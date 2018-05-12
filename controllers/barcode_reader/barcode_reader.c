@@ -11,6 +11,7 @@
 #include "../util/consts.h"
 
 #include "../common/barcode.h"
+#include "../common/helpers.h"
 
 #define MOTOR_SPEED     2.0
 #define DATA_MAX_SIZE   100
@@ -32,7 +33,7 @@ int main()
     uint8_t data[DATA_MAX_SIZE] = {0};
     size_t step = 0;
     
-    printf("Reading barcode...\n");
+    println("Reading barcode...");
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
@@ -55,16 +56,16 @@ int main()
     
     const size_t data_size = step / BARS_PER_VALUE;
     
-    printf("Done! (data: ");
+    print("Done! (data: ");
     for(size_t i = 0; i < data_size; ++i)
         printf("%d%s", data[i], i == data_size - 1 ? ")\n" : ", ");
     
-    printf("Sending packet...\n");
+    println("Sending packet...");
     packet_t packet = {data, data_size};
     if(com_send(packet))
-        printf("Done!\n");
+        println("Done!");
     else
-        printf("Failed!\n");
+        println("Failed!");
     
     wb_robot_cleanup();
     

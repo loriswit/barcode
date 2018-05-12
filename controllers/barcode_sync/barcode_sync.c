@@ -9,6 +9,7 @@
 #include "../util/consts.h"
 
 #include "../common/barcode.h"
+#include "../common/helpers.h"
 
 #define MOTOR_SPEED     2.0
 
@@ -42,8 +43,7 @@ int main()
             color_t input = get_color();
             bool ok = input == test_values[step];
             
-            printf("%s = %s", col2str(input), col2str(test_values[step]));
-            printf(" -> %s\n", ok ? "ok" : "failed");
+            println("%s = %s -> %s", col2str(input), col2str(test_values[step]), ok ? "ok" : "failed");
             
             ++step;
             if(ok)
@@ -55,12 +55,12 @@ int main()
     }
     
     motors_stop();
-    wb_robot_cleanup();
     
-    printf("%s ", test_count == TEST_STEPS ? "Test passed!" : "Test failed!");
-    printf("(%d/%d)\n", test_count, TEST_STEPS);
-    printf("motor speed: %.1f rad/s\n", MOTOR_SPEED);
-    printf("ticks/step: %ld\n", ticks_per_step);
+    println("%s (%d/%d)", test_count == TEST_STEPS ? "Test passed!" : "Test failed!", test_count, TEST_STEPS);
+    println("motor speed: %.1f rad/s", MOTOR_SPEED);
+    println("ticks/step: %ld", ticks_per_step);
+    
+    wb_robot_cleanup();
     
     return EXIT_SUCCESS;
 }

@@ -7,6 +7,7 @@
 #include "../util/consts.h"
 
 #include "barcode.h"
+#include "helpers.h"
 
 #define COLOR_THRESHOLD 700
 #define SYNC_STEPS  5
@@ -40,7 +41,7 @@ clock_t sync()
         if(input != last_input)
         {
             if(!step)
-                printf("Synchronising...\n");
+                println("Synchronising...");
             else
                 ticks[step - 1] = clock() - start;
             
@@ -56,10 +57,11 @@ clock_t sync()
                 average += ticks[i];
             
             clock_t ticks_per_step = average / SYNC_STEPS;
-            printf("Done! (ticks/step: %ld)\n", ticks_per_step);
+            println("Done! (ticks/step: %ld)", ticks_per_step);
             return ticks_per_step;
         }
     }
     
+    println("Failed!");
     return -1;
 }
