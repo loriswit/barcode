@@ -8,7 +8,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 0.7
   orientation 1 0 0 4.71238898038469
-  position 0.008729152381420135 34.727237701416016 -0.022753160446882248
+  position 0.008729152381420135 58.60258483886719 -0.022755442187190056
 }
 Background {
   skyColor [
@@ -136,16 +136,15 @@ DEF LIGHTS Group {
 RectangleArena {
   floorSize 0.8 1.6
   floorTextureUrl [
-    "textures/barcode.png"
+    "textures/barcode_2.png"
   ]
   floorTileSize 0.8 1.6
   wallTextureUrl []
 }
 E-puck {
   translation -0.302858587953869 0 -0.0064066456024084294
-  rotation 0 1 0 4.712388887150466
-  controller "void"
-  name "e-puck0(1)"
+  controller "barcode_receiver"
+  name "e-puck_receiver"
   camera_width 100
   camera_height 4
   groundSensorsSlot [
@@ -154,10 +153,10 @@ E-puck {
   ]
 }
 E-puck {
-  translation -0.0028585604471066304 0 -0.4364066083087176
+  translation -0.0028585321465221017 0 -0.7564066083087169
   rotation 0 1 0 3.1415925651504666
   controller "barcode_reader"
-  name "e-puck0"
+  name "e-puck_reader"
   camera_width 100
   camera_height 4
   groundSensorsSlot [
