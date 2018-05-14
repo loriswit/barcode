@@ -36,6 +36,11 @@ button:focus
     outline: 0;
 }
 
+button::-moz-focus-inner
+{
+    border: 0;
+}
+
 button:hover
 {
     transform: scale(1.1);
@@ -92,7 +97,19 @@ label, input
 
 input
 {
+    border: 2px solid lightgrey;
     padding-left: 8px;
+}
+
+input:focus
+{
+    outline: 0;
+}
+
+input[type=number]::-webkit-inner-spin-button
+{
+    opacity: 1;
+    cursor: pointer;
 }
 
 canvas
