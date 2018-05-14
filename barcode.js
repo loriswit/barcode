@@ -7,13 +7,15 @@ var barcode = function (_, Kotlin) {
   var Unit = Kotlin.kotlin.Unit;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var numberToInt = Kotlin.numberToInt;
   var throwCCE = Kotlin.throwCCE;
+  var asList = Kotlin.org.w3c.dom.asList_kt9thq$;
+  var removeSuffix = Kotlin.kotlin.text.removeSuffix_gsj5wt$;
+  var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var Enum = Kotlin.kotlin.Enum;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var throwISE = Kotlin.throwISE;
   var replace = Kotlin.kotlin.text.replace_680rmw$;
-  var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var asList = Kotlin.org.w3c.dom.asList_kt9thq$;
   Action.prototype = Object.create(Enum.prototype);
   Action.prototype.constructor = Action;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
@@ -54,21 +56,22 @@ var barcode = function (_, Kotlin) {
   }
   function Canvas() {
     Canvas_instance = this;
-    this.barWidth_0 = 10.0;
-    this.barHeight_0 = 300.0;
+    this.barWidth_0 = 20.0;
+    this.barHeight_0 = 600.0;
     var tmp$, tmp$_0;
     this.canvas_0 = Kotlin.isType(tmp$ = document.getElementsByTagName('canvas')[0], HTMLCanvasElement) ? tmp$ : throwCCE();
     this.scene_0 = Kotlin.isType(tmp$_0 = this.canvas_0.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
-    this.canvas_0.width = window.innerWidth;
-    this.canvas_0.height = 300;
+    this.canvas_0.height = 600;
   }
   Canvas.prototype.update = function () {
-    var tmp$;
-    tmp$ = Barcode_getInstance().serialize();
-    for (var index = 0; index !== tmp$.length; ++index) {
-      var bit = tmp$[index];
-      this.scene_0.fillStyle = bit ? 'black' : 'white';
+    var bits = Barcode_getInstance().serialize();
+    this.canvas_0.width = numberToInt(bits.length * this.barWidth_0);
+    for (var index = 0; index !== bits.length; ++index) {
+      var bit = bits[index];
+      this.scene_0.fillStyle = 'hsl(' + ((index / 6 | 0) * 150 | 0) + ', ' + (100 - (index % 2 * 50 | 0) | 0) + '%, ' + (75 - (index % 2 * 50 | 0) | 0) + '%)';
       this.scene_0.fillRect(index * this.barWidth_0, 0.0, this.barWidth_0, this.barHeight_0);
+      this.scene_0.fillStyle = bit ? 'black' : 'white';
+      this.scene_0.fillRect(index * this.barWidth_0, this.barWidth_0, this.barWidth_0, this.barHeight_0 - 2 * this.barWidth_0);
     }
   };
   Canvas.prototype.clear = function () {
@@ -89,8 +92,79 @@ var barcode = function (_, Kotlin) {
     }
     return Canvas_instance;
   }
+  function main$lambda(closure$row) {
+    return function (it) {
+      displayButtonRow(closure$row);
+      return Unit;
+    };
+  }
+  function main$lambda_0(closure$saveLink) {
+    return function (it) {
+      closure$saveLink.href = Canvas_getInstance().dataURL();
+      return Unit;
+    };
+  }
   function main(args) {
-    UI_getInstance();
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    tmp$ = asList(document.querySelectorAll('#main-row button')).iterator();
+    while (tmp$.hasNext()) {
+      var node = tmp$.next();
+      var button = Kotlin.isType(tmp$_0 = node, HTMLElement) ? tmp$_0 : throwCCE();
+      var row = removeSuffix(button.id, '-button');
+      (tmp$_1 = document.getElementById(button.id)) != null ? (tmp$_1.addEventListener('click', main$lambda(row)), Unit) : null;
+    }
+    listenAction('move-forward-button', 'move-units', Action$MOVE_FORWARD_getInstance());
+    listenAction('move-backward-button', 'move-units', Action$MOVE_BACKWARD_getInstance());
+    listenAction('rotate-left-button', 'rotate-degrees', Action$ROTATE_LEFT_getInstance());
+    listenAction('rotate-right-button', 'rotate-degrees', Action$ROTATE_RIGHT_getInstance());
+    listenAction('led-on-button', 'led-number', Action$LED_ON_getInstance());
+    listenAction('led-off-button', 'led-number', Action$LED_OFF_getInstance());
+    listenAction('wait-wait-button', 'wait-time', Action$WAIT_getInstance());
+    var saveLink = Kotlin.isType(tmp$_2 = document.getElementById('save'), HTMLAnchorElement) ? tmp$_2 : throwCCE();
+    saveLink.addEventListener('click', main$lambda_0(saveLink));
+    hideButtonRows();
+    Canvas_getInstance().update();
+  }
+  function listenAction$lambda(closure$input, closure$action) {
+    return function (it) {
+      if (closure$input.reportValidity())
+        registerPacket(closure$action, toInt(closure$input.value));
+      return Unit;
+    };
+  }
+  function listenAction(buttonID, valueID, action) {
+    var tmp$;
+    var button = document.getElementById(buttonID);
+    var input = Kotlin.isType(tmp$ = document.getElementById(valueID), HTMLInputElement) ? tmp$ : throwCCE();
+    button != null ? (button.addEventListener('click', listenAction$lambda(input, action)), Unit) : null;
+  }
+  function registerPacket(action, value) {
+    var tmp$;
+    Barcode_getInstance().addPacket_jg0ilm$(new Packet(action, value));
+    hideButtonRows();
+    Canvas_getInstance().clear();
+    Canvas_getInstance().update();
+    (tmp$ = document.getElementById('packets')) != null ? (tmp$.innerHTML = Barcode_getInstance().toString()) : null;
+  }
+  function hideButtonRows() {
+    var tmp$, tmp$_0, tmp$_1;
+    tmp$ = asList(document.getElementsByClassName('button-row')).iterator();
+    while (tmp$.hasNext()) {
+      var row = tmp$.next();
+      row.classList.add('hidden');
+    }
+    tmp$_0 = asList(document.querySelectorAll('#main-row button')).iterator();
+    while (tmp$_0.hasNext()) {
+      var node = tmp$_0.next();
+      var button = Kotlin.isType(tmp$_1 = node, HTMLElement) ? tmp$_1 : throwCCE();
+      button.classList.remove('selected');
+    }
+  }
+  function displayButtonRow(rowID) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    hideButtonRows();
+    (tmp$_0 = (tmp$ = document.getElementById(rowID + '-row')) != null ? tmp$.classList : null) != null ? (tmp$_0.remove('hidden'), Unit) : null;
+    (tmp$_2 = (tmp$_1 = document.getElementById(rowID + '-button')) != null ? tmp$_1.classList : null) != null ? (tmp$_2.add('selected'), Unit) : null;
   }
   function Action(name, ordinal, id, description) {
     Enum.call(this);
@@ -216,7 +290,7 @@ var barcode = function (_, Kotlin) {
       case 'END':
         return [true, true, true];
       case 'SYNC':
-        return [true, false, true, false, true];
+        return [true, false, true, false, true, false];
       default:tmp$ = Kotlin.noWhenBranchMatched();
         break;
     }
@@ -260,85 +334,6 @@ var barcode = function (_, Kotlin) {
   Packet.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.action_0, other.action_0) && Kotlin.equals(this.value_0, other.value_0)))));
   };
-  function UI() {
-    UI_instance = this;
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
-    tmp$ = asList(document.querySelectorAll('#main-row button')).iterator();
-    while (tmp$.hasNext()) {
-      var node = tmp$.next();
-      var button = Kotlin.isType(tmp$_0 = node, HTMLElement) ? tmp$_0 : throwCCE();
-      var row = replace(button.id, '-button', '-row');
-      (tmp$_1 = document.getElementById(button.id)) != null ? (tmp$_1.addEventListener('click', UI_init$lambda(row, this)), Unit) : null;
-    }
-    this.listenAction_0('move-forward-button', 'move-units', Action$MOVE_FORWARD_getInstance());
-    this.listenAction_0('move-backward-button', 'move-units', Action$MOVE_BACKWARD_getInstance());
-    this.listenAction_0('rotate-left-button', 'rotate-degrees', Action$ROTATE_LEFT_getInstance());
-    this.listenAction_0('rotate-right-button', 'rotate-degrees', Action$ROTATE_RIGHT_getInstance());
-    this.listenAction_0('led-on-button', 'led-number', Action$LED_ON_getInstance());
-    this.listenAction_0('led-off-button', 'led-number', Action$LED_OFF_getInstance());
-    this.listenAction_0('wait-wait-button', 'wait-time', Action$WAIT_getInstance());
-    var saveLink = Kotlin.isType(tmp$_2 = document.getElementById('save'), HTMLAnchorElement) ? tmp$_2 : throwCCE();
-    saveLink.addEventListener('click', UI_init$lambda_0(saveLink));
-    this.hideButtonRows_0();
-    Canvas_getInstance().update();
-  }
-  function UI$listenAction$lambda(closure$action, closure$value, this$UI) {
-    return function (it) {
-      this$UI.registerPacket_0(closure$action, toInt(closure$value.value));
-      return Unit;
-    };
-  }
-  UI.prototype.listenAction_0 = function (buttonID, valueID, action) {
-    var tmp$;
-    var button = document.getElementById(buttonID);
-    var value = Kotlin.isType(tmp$ = document.getElementById(valueID), HTMLInputElement) ? tmp$ : throwCCE();
-    button != null ? (button.addEventListener('click', UI$listenAction$lambda(action, value, this)), Unit) : null;
-  };
-  UI.prototype.registerPacket_0 = function (action, value) {
-    var tmp$;
-    Barcode_getInstance().addPacket_jg0ilm$(new Packet(action, value));
-    this.hideButtonRows_0();
-    Canvas_getInstance().clear();
-    Canvas_getInstance().update();
-    (tmp$ = document.getElementById('packets')) != null ? (tmp$.innerHTML = Barcode_getInstance().toString()) : null;
-  };
-  UI.prototype.hideButtonRows_0 = function () {
-    var tmp$;
-    tmp$ = asList(document.getElementsByClassName('button-row')).iterator();
-    while (tmp$.hasNext()) {
-      var row = tmp$.next();
-      row.classList.add('hidden');
-    }
-  };
-  UI.prototype.displayButtonRow_0 = function (rowID) {
-    var tmp$, tmp$_0;
-    this.hideButtonRows_0();
-    (tmp$_0 = (tmp$ = document.getElementById(rowID)) != null ? tmp$.classList : null) != null ? (tmp$_0.remove('hidden'), Unit) : null;
-  };
-  function UI_init$lambda(closure$row, this$UI) {
-    return function (it) {
-      this$UI.displayButtonRow_0(closure$row);
-      return Unit;
-    };
-  }
-  function UI_init$lambda_0(closure$saveLink) {
-    return function (it) {
-      closure$saveLink.href = Canvas_getInstance().dataURL();
-      return Unit;
-    };
-  }
-  UI.$metadata$ = {
-    kind: Kind_OBJECT,
-    simpleName: 'UI',
-    interfaces: []
-  };
-  var UI_instance = null;
-  function UI_getInstance() {
-    if (UI_instance === null) {
-      new UI();
-    }
-    return UI_instance;
-  }
   var package$barcode = _.barcode || (_.barcode = {});
   Object.defineProperty(package$barcode, 'Barcode', {
     get: Barcode_getInstance
@@ -347,6 +342,10 @@ var barcode = function (_, Kotlin) {
     get: Canvas_getInstance
   });
   package$barcode.main_kand9s$ = main;
+  package$barcode.listenAction_aqa0dc$ = listenAction;
+  package$barcode.registerPacket_vnk9l6$ = registerPacket;
+  package$barcode.hideButtonRows = hideButtonRows;
+  package$barcode.displayButtonRow_61zpoe$ = displayButtonRow;
   Object.defineProperty(Action, 'MOVE_FORWARD', {
     get: Action$MOVE_FORWARD_getInstance
   });
@@ -376,9 +375,6 @@ var barcode = function (_, Kotlin) {
   });
   package$barcode.Action = Action;
   package$barcode.Packet = Packet;
-  Object.defineProperty(package$barcode, 'UI', {
-    get: UI_getInstance
-  });
   main([]);
   Kotlin.defineModule('barcode', _);
   return _;

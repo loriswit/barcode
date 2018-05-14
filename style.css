@@ -1,4 +1,128 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+
+body
+{
+    font-family: "Montserrat", sans-serif;
+    text-align: center;
+    background: lightyellow;
+}
+
+h1
+{
+    font-weight: lighter;
+}
+
+#buttons
+{
+    height: 125px;
+}
+
+button
+{
+    color: white;
+    background: mediumseagreen;
+    border: 2px solid transparent;
+    cursor: pointer;
+
+    font-size: 1.2em;
+    padding: 10px 20px;
+    margin: 0 5px;
+
+    transition: all 0.5s cubic-bezier(0, 1, 0.5, 1);
+}
+
+button:focus
+{
+    outline: 0;
+}
+
+button::-moz-focus-inner
+{
+    border: 0;
+}
+
+button:hover
+{
+    transform: scale(1.1);
+}
+
+button:active
+{
+    transform: scale(0.9);
+}
+
+button.selected
+{
+    background: palegreen;
+    color: darkgreen;
+    cursor: default;
+    border: 2px solid mediumseagreen;
+}
+
+button.selected:hover
+{
+    transform: none;
+}
+
+.button-row button
+{
+    background: indianred;
+}
+
+#main-row
+{
+    padding-bottom: 10px;
+}
+
+.button-row
+{
+    height: 60px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0, 1, 0.5, 1);
+}
+
 .button-row.hidden
 {
-    display: none;
+    height: 0;
+    transform: scale(1, 0);
+    transition: none;
+}
+
+label, input
+{
+    line-height: 40px;
+    font-size: 1.2em;
+    margin: 5px;
+}
+
+input
+{
+    border: 2px solid lightgrey;
+    padding-left: 8px;
+}
+
+input:focus
+{
+    outline: 0;
+}
+
+input[type=number]::-webkit-inner-spin-button
+{
+    opacity: 1;
+    cursor: pointer;
+}
+
+canvas
+{
+    height: 300px;
+}
+
+#packets
+{
+    height: 30px;
+}
+
+#save button
+{
+    background: steelblue;
 }
