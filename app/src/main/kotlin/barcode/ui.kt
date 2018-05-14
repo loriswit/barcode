@@ -14,7 +14,7 @@ object UI
         for(node in document.querySelectorAll("#main-row button").asList())
         {
             val button = node as HTMLElement
-            val row = button.id.replace("-button", "-row")
+            val row = button.id.removeSuffix("-button")
             document.getElementById(button.id)?.addEventListener("click", { displayButtonRow(row) })
         }
         
@@ -56,11 +56,18 @@ object UI
     {
         for(row in document.getElementsByClassName("button-row").asList())
             row.classList.add("hidden")
+        
+        for(node in document.querySelectorAll("#main-row button").asList())
+        {
+            val button = node as HTMLElement
+            button.classList.remove("selected")
+        }
     }
     
     private fun displayButtonRow(rowID: String)
     {
         hideButtonRows()
-        document.getElementById(rowID)?.classList?.remove("hidden")
+        document.getElementById("$rowID-row")?.classList?.remove("hidden")
+        document.getElementById("$rowID-button")?.classList?.add("selected")
     }
 }
