@@ -13,7 +13,7 @@
 #include "../common/barcode.h"
 #include "../common/helpers.h"
 
-#define MOTOR_SPEED     1.0
+#define MOTOR_SPEED     1.5
 #define DATA_MAX_SIZE   100
 #define SYNC_STOP_VALUE 0b111
 #define BARS_PER_VALUE  6

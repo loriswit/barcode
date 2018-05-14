@@ -18,6 +18,15 @@
 #define MOVE_COOLDOWN   (int)(3 * CLOCKS_PER_SEC / MOTOR_SPEED)
 #define ROTATE_COOLDOWN (int)(1.17 * CLOCKS_PER_SEC / MOTOR_SPEED)
 
+/**
+ * Executes a specific action.
+ *
+ * @param action The action numeric identifier
+ * @param value The action parameter's value
+ * @return The number of ticks needed to execute the action
+ */
+clock_t execute_action(int action, int value);
+
 int main()
 {
     wb_robot_init();
@@ -39,69 +48,21 @@ int main()
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
-        if(cooldown <= clock())
+        while(cooldown <= clock())
         {
             if(index == packet.size)
-                break;
+                goto end;
             
             int action = data[index] & 0b111;
             int value = data[index] >> 3 & 0b111;
             
-            switch(action)
-            {
-                case 0:
-                    ++value;
-                    println("%zu) moving %u units forward", index + 1, value);
-                    motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
-                    cooldown = clock() + MOVE_COOLDOWN * value;
-                    break;
-                
-                case 1:
-                    ++value;
-                    println("%zu) moving %u units backward", index + 1, value);
-                    motors_set_speed(-MOTOR_SPEED, -MOTOR_SPEED);
-                    cooldown = clock() + MOVE_COOLDOWN * value;
-                    break;
-                
-                case 2:
-                    ++value;
-                    println("%zu) rotating %u° left", index + 1, value * 45);
-                    motors_set_speed(-MOTOR_SPEED, MOTOR_SPEED);
-                    cooldown = clock() + ROTATE_COOLDOWN * value;
-                    break;
-                
-                case 3:
-                    ++value;
-                    println("%zu) rotating %u° right", index + 1, value * 45);
-                    motors_set_speed(MOTOR_SPEED, -MOTOR_SPEED);
-                    cooldown = clock() + ROTATE_COOLDOWN * value;
-                    break;
-                
-                case 4:
-                    println("%zu) turning LED %u on", index + 1, value);
-                    led_set(value, true);
-                    break;
-                
-                case 5:
-                    println("%zu) turning LED %u off", index + 1, value);
-                    led_set(value, false);
-                    break;
-                
-                case 6:
-                    ++value;
-                    println("%zu) waiting for %u seconds", index + 1, value);
-                    motors_stop();
-                    cooldown = clock() + CLOCKS_PER_SEC * value;
-                    break;
-                
-                default:
-                    println("unknown action");
-                    break;
-            }
+            clock_t duration = execute_action(action, value);
+            cooldown = clock() + duration;
             
             ++index;
         }
     }
+    end:
     
     free(data);
     
@@ -109,4 +70,54 @@ int main()
     wb_robot_cleanup();
     
     return EXIT_SUCCESS;
+}
+
+clock_t execute_action(int action, int value)
+{
+    switch(action)
+    {
+        case 0:
+            ++value;
+            println("Moving %u units forward", value);
+            motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
+            return MOVE_COOLDOWN * value;
+        
+        case 1:
+            ++value;
+            println("Moving %u units backward", value);
+            motors_set_speed(-MOTOR_SPEED, -MOTOR_SPEED);
+            return MOVE_COOLDOWN * value;
+        
+        case 2:
+            ++value;
+            println("Rotating %u° left", value * 45);
+            motors_set_speed(-MOTOR_SPEED, MOTOR_SPEED);
+            return +ROTATE_COOLDOWN * value;
+        
+        case 3:
+            ++value;
+            println("Rotating %u° right", value * 45);
+            motors_set_speed(MOTOR_SPEED, -MOTOR_SPEED);
+            return ROTATE_COOLDOWN * value;
+        
+        case 4:
+            println("Turning LED %u on", value);
+            led_set((size_t) value, true);
+            return 0;
+        
+        case 5:
+            println("Turning LED %u off", value);
+            led_set((size_t) value, false);
+            return 0;
+        
+        case 6:
+            ++value;
+            println("Waiting for %u seconds", value);
+            motors_stop();
+            return CLOCKS_PER_SEC * value;
+        
+        default:
+            println("Unknown action: %d (value: %d)", action, value);
+            return 0;
+    }
 }
