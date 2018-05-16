@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <time.h>
 
 #include <webots/robot.h>
 
@@ -15,8 +14,8 @@
 #define MOTOR_SPEED     2.0
 #define DATA_MAX_SIZE   100
 
-#define MOVE_COOLDOWN   (int)(3 * CLOCKS_PER_SEC / MOTOR_SPEED)
-#define ROTATE_COOLDOWN (int)(1.17 * CLOCKS_PER_SEC / MOTOR_SPEED)
+#define MOVE_COOLDOWN   (3 / MOTOR_SPEED)
+#define ROTATE_COOLDOWN (1.17 / MOTOR_SPEED)
 
 /**
  * Executes a specific action.
@@ -25,7 +24,7 @@
  * @param value The action parameter's value
  * @return The number of ticks needed to execute the action
  */
-clock_t execute_action(int action, int value);
+double execute_action(int action, int value);
 
 int main()
 {
@@ -44,11 +43,11 @@ int main()
     
     uint8_t * data = packet.data;
     size_t index = 0;
-    clock_t cooldown = clock();
+    double cooldown = now();
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
-        while(cooldown <= clock())
+        while(cooldown <= now())
         {
             if(index == packet.size)
                 goto end;
@@ -56,8 +55,9 @@ int main()
             int action = data[index] & 0b111;
             int value = data[index] >> 3 & 0b111;
             
-            clock_t duration = execute_action(action, value);
-            cooldown = clock() + duration;
+            double duration = execute_action(action, value);
+            cooldown = now() + duration;
+            printf("%.3f < %.3f ?\n", cooldown, now());
             
             ++index;
         }
@@ -72,7 +72,7 @@ int main()
     return EXIT_SUCCESS;
 }
 
-clock_t execute_action(int action, int value)
+double execute_action(int action, int value)
 {
     switch(action)
     {
@@ -92,7 +92,7 @@ clock_t execute_action(int action, int value)
             ++value;
             println("Rotating %u° left", value * 45);
             motors_set_speed(-MOTOR_SPEED, MOTOR_SPEED);
-            return +ROTATE_COOLDOWN * value;
+            return ROTATE_COOLDOWN * value;
         
         case 3:
             ++value;
@@ -114,7 +114,7 @@ clock_t execute_action(int action, int value)
             ++value;
             println("Waiting for %u seconds", value);
             motors_stop();
-            return CLOCKS_PER_SEC * value;
+            return value;
         
         default:
             println("Unknown action: %d (value: %d)", action, value);

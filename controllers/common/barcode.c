@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <time.h>
 
 #include <webots/robot.h>
 
@@ -28,11 +27,11 @@ char * col2str(color_t color)
     return color == black ? "black" : "white";
 }
 
-clock_t sync()
+double sync()
 {
     unsigned step = 0;
-    clock_t start = 0;
-    clock_t ticks[SYNC_STEPS];
+    double start = 0;
+    double times[SYNC_STEPS];
     color_t last_input = white;
     
     while(wb_robot_step(TIME_STEP) != -1)
@@ -43,22 +42,22 @@ clock_t sync()
             if(!step)
                 println("Synchronising...");
             else
-                ticks[step - 1] = clock() - start;
+                times[step - 1] = now() - start;
             
             ++step;
-            start = clock();
+            start = now();
             last_input = input;
         }
         
         if(step > SYNC_STEPS)
         {
-            clock_t average = 0;
+            double average = 0;
             for(size_t i = 0; i < SYNC_STEPS; ++i)
-                average += ticks[i];
+                average += times[i];
             
-            clock_t ticks_per_step = average / SYNC_STEPS;
-            println("Done! (ticks/step: %ld)", ticks_per_step);
-            return ticks_per_step;
+            double time_per_step = average / SYNC_STEPS;
+            println("Done! (time/step: %.3f s)", time_per_step);
+            return time_per_step;
         }
     }
     

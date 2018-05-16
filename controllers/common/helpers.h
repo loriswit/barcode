@@ -2,6 +2,16 @@
 #define BARCODE_HELPERS_H
 
 /**
+ * Returns the time elapsed until now.
+ *
+ * @return The elapsed time in seconds.
+ */
+inline double now()
+{
+    return wb_robot_get_time();
+}
+
+/**
  * Prints a formatted line, including the name of the robot.
  *
  * @param format The line to be formatted

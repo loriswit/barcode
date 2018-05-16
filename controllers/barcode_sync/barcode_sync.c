@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <time.h>
 
 #include <webots/robot.h>
 
@@ -29,17 +28,17 @@ int main()
     
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     
-    const clock_t ticks_per_step = sync();
-    clock_t step_start = clock() + ticks_per_step / 2;
+    const double time_per_step = sync();
+    double step_start = now() + time_per_step / 2;
     
     unsigned step = 0;
     unsigned test_count = 0;
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
-        if(clock() - step_start >= ticks_per_step)
+        if(now() - step_start >= time_per_step)
         {
-            step_start = clock();
+            step_start = now();
             color_t input = get_color();
             bool ok = input == test_values[step];
             
@@ -58,7 +57,7 @@ int main()
     
     println("%s (%d/%d)", test_count == TEST_STEPS ? "Test passed!" : "Test failed!", test_count, TEST_STEPS);
     println("motor speed: %.1f rad/s", MOTOR_SPEED);
-    println("ticks/step: %ld", ticks_per_step);
+    println("time/step: %.3f s", time_per_step);
     
     wb_robot_cleanup();
     

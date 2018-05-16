@@ -27,6 +27,6 @@ char * col2str(color_t color);
  *
  * @return The average elapsed ticks per bar.
  */
-clock_t sync();
+double sync();
 
 #endif //BARCODE_BARCODE_H

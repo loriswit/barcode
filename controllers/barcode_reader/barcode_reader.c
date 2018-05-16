@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <stdint.h>
 
 #include <webots/robot.h>
@@ -13,7 +12,7 @@
 #include "../common/barcode.h"
 #include "../common/helpers.h"
 
-#define MOTOR_SPEED     1.5
+#define MOTOR_SPEED     2.0
 #define DATA_MAX_SIZE   100
 #define SYNC_STOP_VALUE 0b111
 #define BARS_PER_VALUE  6
@@ -27,8 +26,8 @@ int main()
     
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     
-    clock_t ticks_per_step = sync();
-    clock_t step_start = clock() + ticks_per_step / 2;
+    double time_per_step = sync();
+    double step_start = now() + time_per_step / 2;
     
     uint8_t data[DATA_MAX_SIZE] = {0};
     size_t step = 0;
@@ -37,9 +36,9 @@ int main()
     
     while(wb_robot_step(TIME_STEP) != -1)
     {
-        if(clock() - step_start >= ticks_per_step)
+        if(now() - step_start >= time_per_step)
         {
-            step_start = clock();
+            step_start = now();
             color_t input = get_color();
             
             size_t index = step / BARS_PER_VALUE;
