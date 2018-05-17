@@ -17,6 +17,8 @@
 #define MOVE_COOLDOWN   (3 / MOTOR_SPEED)
 #define ROTATE_COOLDOWN (1.17 / MOTOR_SPEED)
 
+#define REMOTE_MULTIPLIER   0.5
+
 /**
  * Executes a specific action.
  *
@@ -56,8 +58,10 @@ int main()
             int value = data[index] >> 3 & 0b111;
             
             double duration = execute_action(action, value);
+            if(wb_robot_get_mode() == WB_MODE_REMOTE_CONTROL)
+                duration *= REMOTE_MULTIPLIER;
+            
             cooldown = now() + duration;
-            printf("%.3f < %.3f ?\n", cooldown, now());
             
             ++index;
         }

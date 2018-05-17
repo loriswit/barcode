@@ -6,10 +6,7 @@
  *
  * @return The elapsed time in seconds.
  */
-inline double now()
-{
-    return wb_robot_get_time();
-}
+#define now wb_robot_get_time
 
 /**
  * Prints a formatted line, including the name of the robot.

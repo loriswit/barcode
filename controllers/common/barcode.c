@@ -3,6 +3,7 @@
 #include <webots/robot.h>
 
 #include "../util/ground_sensors.h"
+#include "../util/leds.h"
 #include "../util/consts.h"
 
 #include "barcode.h"
@@ -10,6 +11,8 @@
 
 #define COLOR_THRESHOLD 700
 #define SYNC_STEPS  5
+
+#define REMOTE_MULTIPLIER   0.9
 
 color_t get_color()
 {
@@ -40,7 +43,10 @@ double sync()
         if(input != last_input)
         {
             if(!step)
+            {
                 println("Synchronising...");
+                leds_set(true);
+            }
             else
                 times[step - 1] = now() - start;
             
@@ -56,11 +62,16 @@ double sync()
                 average += times[i];
             
             double time_per_step = average / SYNC_STEPS;
+            if(wb_robot_get_mode() == WB_MODE_REMOTE_CONTROL)
+                time_per_step *= REMOTE_MULTIPLIER;
+            
             println("Done! (time/step: %.3f s)", time_per_step);
+            leds_set(false);
             return time_per_step;
         }
     }
     
     println("Failed!");
+    leds_set(false);
     return -1;
 }

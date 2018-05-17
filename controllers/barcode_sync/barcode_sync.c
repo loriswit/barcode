@@ -5,6 +5,7 @@
 
 #include "../util/motors.h"
 #include "../util/ground_sensors.h"
+#include "../util/leds.h"
 #include "../util/consts.h"
 
 #include "../common/barcode.h"
@@ -25,6 +26,7 @@ int main()
     wb_robot_init();
     motors_init();
     ground_init();
+    leds_init();
     
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     

@@ -6,13 +6,14 @@
 
 #include "../util/motors.h"
 #include "../util/ground_sensors.h"
+#include "../util/leds.h"
 #include "../util/com.h"
 #include "../util/consts.h"
 
 #include "../common/barcode.h"
 #include "../common/helpers.h"
 
-#define MOTOR_SPEED     2.0
+#define MOTOR_SPEED     1.5
 #define DATA_MAX_SIZE   100
 #define SYNC_STOP_VALUE 0b111
 #define BARS_PER_VALUE  6
@@ -22,12 +23,13 @@ int main()
     wb_robot_init();
     motors_init();
     ground_init();
+    leds_init();
     com_init();
     
     motors_set_speed(MOTOR_SPEED, MOTOR_SPEED);
     
     double time_per_step = sync();
-    double step_start = now() + time_per_step / 2;
+    double step_start = now() + time_per_step / 3;
     
     uint8_t data[DATA_MAX_SIZE] = {0};
     size_t step = 0;
@@ -48,7 +50,10 @@ int main()
                 break;
             
             ++step;
+            leds_set(true);
         }
+        else
+            leds_set(false);
     }
     
     motors_stop();
