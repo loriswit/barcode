@@ -27,6 +27,8 @@ fun main(args: Array<String>)
     val saveLink = document.getElementById("save") as HTMLAnchorElement
     saveLink.addEventListener("click", { saveLink.href = Canvas.dataURL() })
     
+    document.getElementById("reset")?.addEventListener("click", { clearPackets() })
+    
     hideButtonRows()
     Canvas.update()
 }
@@ -48,6 +50,13 @@ fun registerPacket(action: Action, value: Int)
     Canvas.update()
     
     document.getElementById("packets")?.innerHTML = Barcode.toString()
+}
+
+fun clearPackets()
+{
+    Barcode.clear()
+    Canvas.clear()
+    Canvas.update()
 }
 
 fun hideButtonRows()

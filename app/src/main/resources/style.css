@@ -133,6 +133,11 @@ canvas
     height: 30px;
 }
 
+#reset
+{
+    background: steelblue;
+}
+
 #save button
 {
     background: steelblue;

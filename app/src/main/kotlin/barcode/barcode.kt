@@ -10,6 +10,11 @@ object Barcode
         packets.add(packet)
     }
     
+    fun clear()
+    {
+        packets.clear()
+    }
+    
     fun serialize(): Array<Boolean>
     {
         val bits = mutableListOf<Boolean>()
