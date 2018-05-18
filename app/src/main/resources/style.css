@@ -10,6 +10,17 @@ body
 h1
 {
     font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+header p
+{
+    letter-spacing: 2px;
+}
+
+header
+{
+    margin-bottom: 30px;
 }
 
 #buttons
@@ -125,4 +136,28 @@ canvas
 #save button
 {
     background: steelblue;
+}
+
+footer
+{
+    margin-top: 40px;
+}
+
+footer p
+{
+    font-size: 0.8em;
+}
+
+a
+{
+    text-decoration: none;
+    color: steelblue;
+    font-weight: bold;
+    transition: color 0.1s linear;
+}
+
+a:hover
+{
+    text-decoration: underline;
+    color: orange;
 }

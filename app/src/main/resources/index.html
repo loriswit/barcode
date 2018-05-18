@@ -8,49 +8,56 @@
 </head>
 
 <body>
-<h1>Barcode generator</h1>
+<header>
+    <h1>Barcode generator</h1>
+    <p>robotics challenge task</p>
+</header>
+<main>
+    <div id="buttons">
+        <div id="main-row">
+            <button id="move-button">Move</button>
+            <button id="rotate-button">Rotate</button>
+            <button id="led-button">LED</button>
+            <button id="wait-button">Wait</button>
+        </div>
 
-<div id="buttons">
-    <div id="main-row">
-        <button id="move-button">Move</button>
-        <button id="rotate-button">Rotate</button>
-        <button id="led-button">LED</button>
-        <button id="wait-button">Wait</button>
+        <div class="button-row" id="move-row">
+            <label for="move-units">Units</label>
+            <input id="move-units" type="number" value=1 min=1 max=8>
+            <button id="move-forward-button">Forward</button>
+            <button id="move-backward-button">Backward</button>
+        </div>
+
+        <div class="button-row" id="rotate-row">
+            <label for="rotate-degrees">Degrees</label>
+            <input id="rotate-degrees" type="number" value=90 min=45 max=360 step=45>
+            <button id="rotate-left-button">Left</button>
+            <button id="rotate-right-button">Right</button>
+        </div>
+
+        <div class="button-row" id="led-row">
+            <label for="led-number">Number</label>
+            <input id="led-number" type="number" value=0 min=0 max=7>
+            <button id="led-on-button">On</button>
+            <button id="led-off-button">Off</button>
+        </div>
+
+        <div class="button-row" id="wait-row">
+            <label for="wait-time">Seconds</label>
+            <input id="wait-time" type="number" value=1 min=1 max=8>
+            <button id="wait-wait-button">Wait</button>
+        </div>
     </div>
 
-    <div class="button-row" id="move-row">
-        <label for="move-units">Units</label>
-        <input id="move-units" type="number" value=1 min=1 max=8>
-        <button id="move-forward-button">Forward</button>
-        <button id="move-backward-button">Backward</button>
-    </div>
-
-    <div class="button-row" id="rotate-row">
-        <label for="rotate-degrees">Degrees</label>
-        <input id="rotate-degrees" type="number" value=90 min=45 max=360 step=45>
-        <button id="rotate-left-button">Left</button>
-        <button id="rotate-right-button">Right</button>
-    </div>
-
-    <div class="button-row" id="led-row">
-        <label for="led-number">Number</label>
-        <input id="led-number" type="number" value=0 min=0 max=7>
-        <button id="led-on-button">On</button>
-        <button id="led-off-button">Off</button>
-    </div>
-
-    <div class="button-row" id="wait-row">
-        <label for="wait-time">Seconds</label>
-        <input id="wait-time" type="number" value=1 min=1 max=8>
-        <button id="wait-wait-button">Wait</button>
-    </div>
-</div>
-
-<canvas></canvas>
-<p id="packets"></p>
-<a id="save" href="#" download="barcode.png">
-    <button>Save as image</button>
-</a>
+    <canvas></canvas>
+    <p id="packets"></p>
+    <a id="save" href="#" download="barcode.png">
+        <button>Save as image</button>
+    </a>
+</main>
+<footer>
+    <p>made by <a href="https://github.com/olybri">Loris Witschard</a></p>
+</footer>
 
 <script type="text/javascript" src="kotlin.js"></script>
 <script type="text/javascript" src="barcode.js"></script>
