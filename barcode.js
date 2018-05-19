@@ -26,6 +26,9 @@ var barcode = function (_, Kotlin) {
   Barcode.prototype.addPacket_jg0ilm$ = function (packet) {
     this.packets_0.add_11rb$(packet);
   };
+  Barcode.prototype.clear = function () {
+    this.packets_0.clear();
+  };
   var copyToArray = Kotlin.kotlin.collections.copyToArray;
   Barcode.prototype.serialize = function () {
     var bits = ArrayList_init();
@@ -104,8 +107,12 @@ var barcode = function (_, Kotlin) {
       return Unit;
     };
   }
+  function main$lambda_1(it) {
+    clearPackets();
+    return Unit;
+  }
   function main(args) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
     tmp$ = asList(document.querySelectorAll('#main-row button')).iterator();
     while (tmp$.hasNext()) {
       var node = tmp$.next();
@@ -122,6 +129,7 @@ var barcode = function (_, Kotlin) {
     listenAction('wait-wait-button', 'wait-time', Action$WAIT_getInstance());
     var saveLink = Kotlin.isType(tmp$_2 = document.getElementById('save'), HTMLAnchorElement) ? tmp$_2 : throwCCE();
     saveLink.addEventListener('click', main$lambda_0(saveLink));
+    (tmp$_3 = document.getElementById('reset')) != null ? (tmp$_3.addEventListener('click', main$lambda_1), Unit) : null;
     hideButtonRows();
     Canvas_getInstance().update();
   }
@@ -145,6 +153,11 @@ var barcode = function (_, Kotlin) {
     Canvas_getInstance().clear();
     Canvas_getInstance().update();
     (tmp$ = document.getElementById('packets')) != null ? (tmp$.innerHTML = Barcode_getInstance().toString()) : null;
+  }
+  function clearPackets() {
+    Barcode_getInstance().clear();
+    Canvas_getInstance().clear();
+    Canvas_getInstance().update();
   }
   function hideButtonRows() {
     var tmp$, tmp$_0, tmp$_1;
@@ -344,6 +357,7 @@ var barcode = function (_, Kotlin) {
   package$barcode.main_kand9s$ = main;
   package$barcode.listenAction_aqa0dc$ = listenAction;
   package$barcode.registerPacket_vnk9l6$ = registerPacket;
+  package$barcode.clearPackets = clearPackets;
   package$barcode.hideButtonRows = hideButtonRows;
   package$barcode.displayButtonRow_61zpoe$ = displayButtonRow;
   Object.defineProperty(Action, 'MOVE_FORWARD', {
