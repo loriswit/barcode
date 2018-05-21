@@ -146,18 +146,20 @@ var barcode = function (_, Kotlin) {
     var input = Kotlin.isType(tmp$ = document.getElementById(valueID), HTMLInputElement) ? tmp$ : throwCCE();
     button != null ? (button.addEventListener('click', listenAction$lambda(input, action)), Unit) : null;
   }
-  function registerPacket(action, value) {
+  function refresh() {
     var tmp$;
-    Barcode_getInstance().addPacket_jg0ilm$(new Packet(action, value));
-    hideButtonRows();
     Canvas_getInstance().clear();
     Canvas_getInstance().update();
     (tmp$ = document.getElementById('packets')) != null ? (tmp$.innerHTML = Barcode_getInstance().toString()) : null;
   }
+  function registerPacket(action, value) {
+    Barcode_getInstance().addPacket_jg0ilm$(new Packet(action, value));
+    hideButtonRows();
+    refresh();
+  }
   function clearPackets() {
     Barcode_getInstance().clear();
-    Canvas_getInstance().clear();
-    Canvas_getInstance().update();
+    refresh();
   }
   function hideButtonRows() {
     var tmp$, tmp$_0, tmp$_1;
@@ -356,6 +358,7 @@ var barcode = function (_, Kotlin) {
   });
   package$barcode.main_kand9s$ = main;
   package$barcode.listenAction_aqa0dc$ = listenAction;
+  package$barcode.refresh = refresh;
   package$barcode.registerPacket_vnk9l6$ = registerPacket;
   package$barcode.clearPackets = clearPackets;
   package$barcode.hideButtonRows = hideButtonRows;
