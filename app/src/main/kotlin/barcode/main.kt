@@ -41,22 +41,26 @@ fun listenAction(buttonID: String, valueID: String, action: Action)
     button?.addEventListener("click", { if(input.reportValidity()) registerPacket(action, input.value.toInt()) })
 }
 
-fun registerPacket(action: Action, value: Int)
+fun refresh()
 {
-    Barcode.addPacket(Packet(action, value))
-    
-    hideButtonRows()
     Canvas.clear()
     Canvas.update()
     
     document.getElementById("packets")?.innerHTML = Barcode.toString()
 }
 
+fun registerPacket(action: Action, value: Int)
+{
+    Barcode.addPacket(Packet(action, value))
+    
+    hideButtonRows()
+    refresh()
+}
+
 fun clearPackets()
 {
     Barcode.clear()
-    Canvas.clear()
-    Canvas.update()
+    refresh()
 }
 
 fun hideButtonRows()
